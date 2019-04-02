@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+
+	<title></title>
+	<style>
+		header{
+			background: black;
+			color: white;
+		}
+		section{
+			background: lightgray;
+			color: black;
+		}
+		footer{
+			background: black;
+			color: white;
+		}
+	</style>
+
+</head>
+<body>
+<header>
+	<p> HEADER </p> 
+</header>
+
+<section>
+	Welcome to the application you can logout <a href="{{logout_url}}">here</a><br>
+	Enter your text here to search for subanagrams: 
+	<form method="post" action="/subanagram">
+		<input type="text" name="anagram_text" pattern="^[A-Za-z][A-Za-z ]*$" value="{{text}}" required>
+  		<input type="submit" name="button" value="Enter">
+	</form>
+	<a href="/">Back</a>
+</section>
+<br>
+{% if dictionaries %}
+<h5>Anagrams</h5>
+<section>
+	{% for dictionary in dictionaries %}
+	<p><b>Anagram {{loop.index}}:</b>
+		{% for word in dictionary %}
+			{{word}}	
+		{% endfor %}
+		</p><br>
+	{% endfor %}
+
+</section>
+{% endif %}
+
+<footer>
+	<p> FOOTER </p>
+</footer>
+</body>
+</html>
