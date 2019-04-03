@@ -1,63 +1,231 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-	<meta charset="utf-8">
 
-	<title></title>
-	<style>
-		header{
-			background: black;
-			color: white;
-		}
-		section{
-			background: lightgray;
-			color: black;
-		}
-		footer{
-			background: black;
-			color: white;
-		}
-	</style>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
+  <title>Anagram Engine</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <style>
+    .closebtn {
+      margin-left: 15px;
+      color: #858796;
+      font-weight: bold;
+      float: right;
+      font-size: 24px;
+      line-height: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .closebtn:hover {
+      color: #4e73df;
+    }
+  </style>
 </head>
-<body>
-<header>
-	<p> Number of Anagram Lists: {{myuserAnagrams}} </p>
-	<p> Number of Words: {{myuser.wordCount}} </p><br> 
-</header>
 
-<section>
-	Welcome to the application you can logout <a href="{{logout_url}}">here</a><br>
-	Add some words from <a href="/add">here.</a>
-</section>
-<br>
-<section>
-	Enter your text here to search for anagrams: 
-	<form method="post" action="/">
-		<input type="text" name="user_text" pattern="^[A-Za-z][A-Za-z ]*$" value="{{text}}" required>
-  		<input type="submit" name="button" value="Enter">
-	</form>
-</section>
-<br>
-{% if dictionaries %}
-<h5>Anagrams</h5>
-<section>
-	{% for dictionary in dictionaries %}
-	<p><b>Anagram {{loop.index}}:</b>
-		{% for word in dictionary %}
-			{{word}}	
-		{% endfor %}
-		</p><br>
-	{% endfor %}
+<body id="page-top">
 
-</section>
-{% endif %}
-<br>
-<section>
-	Do you want to check the SubAnagrams <a href="/subanagram">here.</a>
-</section>
-<footer>
-	<p> FOOTER </p>
-</footer>
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <div class="sidebar-brand-text mx-3">Anagram Engine</sup></div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <li class="nav-item active">
+        <a class="nav-link" href="/">
+          <span><center>Home Page </center></span></a>
+      </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <li class="nav-item active">
+        <a class="nav-link" href="/add">
+          <span><center>Add New Anagram</center></span></a>
+      </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <li class="nav-item active">
+        <a class="nav-link" href="/subanagram">
+          <span><center>Search Subanagrams</center></span></a>
+      </li>
+
+      <hr class="sidebar-divider d-none d-md-block">
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a href="{{logout_url}}" class="d-none d-sm-inline-block btn btn-md btn-primary shadow-md"> Logout </a>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Welcome To Your Anagram Engine</h1>
+          </div>
+
+          <!-- Content Row -->
+
+          <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-5 col-lg-4" style="padding-top: 25px;">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Anagram Search</h6>
+                </div>
+                <div class="card-body">
+                  <p>Please enter your text below to search for the anagrams.</p>
+                  
+                  <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="post" action="/">
+                    <div class="input-group">
+                    
+                      <input type="text" class="form-control bg-light border-0 small" name="user_text" pattern="^[A-Za-z][A-Za-z ]*$" value="{{text}}" placeholder="Enter your word here" required>
+                      <input class="btn btn-primary" type="submit" name="button" value="Enter">
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-7 col-lg-8">
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">User Statistics</h6>
+                </div>
+                <div class="card-body">
+                  <h4 class="small font-weight-bold">Number of Anagram Lists <span class="float-right">{{myuserAnagrams}}</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{myuserAnagrams}}%" aria-valuenow="{{myuserAnagrams}}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="small font-weight-bold">Number Of Words <span class="float-right">{{myuser.wordCount}}</span></h4>
+                  <div class="progress mb-4">
+                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{myuser.wordCount}}%" aria-valuenow="{{myuser.wordCount}}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                </div>
+              </div>
+              </div>
+          </div>
+
+          {% if dictionaries %}
+          <div class="card shadow mb-4">
+            <div class="card-header py-3">
+              <a href="/"><span class="closebtn">&times;</span></a>
+              <h6 class="m-0 font-weight-bold text-primary">Anagrams</h6>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th width="5%" align="center">No.</th>
+                      <th>Anagrams</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for dictionary in dictionaries %}
+                    <tr>
+                      <td align="center" style="font-weight: bold">{{loop.index}}</td>
+                      <td>
+                        {% for word in dictionary %}
+                          {{word}} &nbsp &nbsp 
+                        {% endfor %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+          
+
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Mert Altintas 2982775</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="jquery/jquery.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="jquery/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="js/Chart.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/chart-area-demo.js"></script>
+  <script src="js/chart-pie-demo.js"></script>
+
 </body>
+
 </html>
