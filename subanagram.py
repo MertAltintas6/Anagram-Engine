@@ -59,7 +59,7 @@ class SubAnagram(webapp2.RequestHandler):
 				myuser = MyUser(id=user.user_id(), wordCount=0)
 				myuser.put()
 
-			template_values = {'logout_url':users.create_logout_url(self.request.uri)}
+			template_values = {'logout_url':users.create_logout_url(self.request.uri),'myuser': myuser,'myuserAnagrams':len(myuser.userDictionary)}
 			template = JINJA_ENVIRONMENT.get_template('subanagram.html')
 			self.response.write(template.render(template_values))
 
@@ -87,6 +87,6 @@ class SubAnagram(webapp2.RequestHandler):
 				self.redirect('/subanagram')
 				return
 			
-			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'dictionaries': dictionaries, 'text':text}
+			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'dictionaries': dictionaries, 'text':text,'myuser': myuser,'myuserAnagrams':len(myuser.userDictionary)}
 			template = JINJA_ENVIRONMENT.get_template('subanagram.html')
 			self.response.write(template.render(template_values))

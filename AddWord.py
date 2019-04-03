@@ -40,7 +40,7 @@ class AddWord(webapp2.RequestHandler):
 				myuser.put()
 
 
-			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'myuser': myuser}
+			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'myuser': myuser, 'myuserAnagrams':len(myuser.userDictionary), 'fail':False}
 			template = JINJA_ENVIRONMENT.get_template('add.html')
 			self.response.write(template.render(template_values))
 
@@ -53,6 +53,8 @@ class AddWord(webapp2.RequestHandler):
 		myuser_key = ndb.Key('MyUser', user.user_id())
 		myuser = myuser_key.get()
 		
+		fail = True
+
 		if button == "Add Word":
 			word = self.request.get("word").strip()
 
@@ -73,10 +75,16 @@ class AddWord(webapp2.RequestHandler):
 				myuser.wordCount+=1
 				dictionary.put()
 				myuser.put()
+				fail = False
 
 			if key not in myuser.userDictionary:
 				myuser.userDictionary.append(key)
 				myuser.put()
+
+			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'myuser': myuser, 'myuserAnagrams':len(myuser.userDictionary), 'fail':fail, 'text':word}
+			template = JINJA_ENVIRONMENT.get_template('add.html')
+			self.response.write(template.render(template_values))
+			return
 
 		elif button == "Submit":
 			file = self.request.get('txtFile')
