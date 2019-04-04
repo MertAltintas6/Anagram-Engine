@@ -18,6 +18,32 @@ class AddWord(webapp2.RequestHandler):
 		key = "".join(sorted(word))
 		return key
 
+
+	def addWord(self, key, myuser, word):
+		dictionary_key = ndb.Key('Dictionary', key)
+		dictionary = dictionary_key.get() 
+		fail = True
+		if dictionary == None:
+			w_list = []
+			keyList = []
+			dictionary = Dictionary(wordList = w_list, wordCount= len(w_list), letterCount = len(key.split(":")[-1]), subanagramKeys=keyList)
+			dictionary.key = ndb.Key('Dictionary', key)
+			dictionary.put()
+
+		if word not in dictionary.wordList:
+			dictionary.wordList.append(word)
+			dictionary.wordCount = len(dictionary.wordList)
+			myuser.wordCount+=1
+			dictionary.put()
+			myuser.put()
+			fail = False
+		if key not in myuser.userDictionary:
+			myuser.userDictionary.append(key)
+			myuser.put()
+
+		return fail
+
+
 	def get(self):
 		self.response.headers['Content-Type'] = 'text/html'
 
@@ -53,33 +79,13 @@ class AddWord(webapp2.RequestHandler):
 		myuser_key = ndb.Key('MyUser', user.user_id())
 		myuser = myuser_key.get()
 		
-		fail = True
 
 		if button == "Add Word":
 			word = self.request.get("word").strip()
 
 			key = user.user_id()+":"+self.orderLetters(word) 
 
-			dictionary_key = ndb.Key('Dictionary', key)
-			dictionary = dictionary_key.get() 
-
-			if dictionary == None:
-				w_list = []
-				dictionary = Dictionary(wordList = w_list, wordCount= len(w_list), letterCount = len(key.split(":")[-1]))
-				dictionary.key = ndb.Key('Dictionary', key)
-				dictionary.put()
-
-			if word not in dictionary.wordList:
-				dictionary.wordList.append(word)
-				dictionary.wordCount = len(dictionary.wordList)
-				myuser.wordCount+=1
-				dictionary.put()
-				myuser.put()
-				fail = False
-
-			if key not in myuser.userDictionary:
-				myuser.userDictionary.append(key)
-				myuser.put()
+			fail = self.addWord(key,myuser,word)
 
 			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'myuser': myuser, 'myuserAnagrams':len(myuser.userDictionary), 'fail':fail, 'text':word}
 			template = JINJA_ENVIRONMENT.get_template('add.html')
@@ -93,25 +99,7 @@ class AddWord(webapp2.RequestHandler):
 			for word in f:
 				word = word.split('\n')[0]
 				key = user.user_id()+":"+self.orderLetters(word) 
-				dictionary_key = ndb.Key('Dictionary', key)
-				dictionary = dictionary_key.get() 
-
-				if dictionary == None:
-					w_list = []
-					dictionary = Dictionary(wordList = w_list, wordCount= len(w_list), letterCount = len(key.split(":")[-1]))
-					dictionary.key = ndb.Key('Dictionary', key)
-					dictionary.put()
-
-				if word not in dictionary.wordList:
-					dictionary.wordList.append(word)
-					dictionary.wordCount = len(dictionary.wordList)
-					myuser.wordCount+=1
-					dictionary.put()
-					myuser.put()
-
-				if key not in myuser.userDictionary:
-					myuser.userDictionary.append(key)
-					myuser.put()
+				self.addWord(key,myuser,word)
 
 			
 		self.redirect('/add')

@@ -73,20 +73,36 @@ class SubAnagram(webapp2.RequestHandler):
 		
 		if button == "Enter":
 			text = self.request.get('anagram_text').strip()
+			orderedKey = user.user_id() + ":" +self.orderLetters(text) 
+			dictionary_key = ndb.Key('Dictionary',orderedKey)
+			dictionary = dictionary_key.get()
 			keys = []
-			self.getAllSubKeys(text,keys)
-			dictionaries = []
-			for key in keys:
-				newKey = user.user_id()+":"+key
-				if newKey in myuser.userDictionary:
-					dictionary_key = ndb.Key('Dictionary',newKey)
-					dictionary = dictionary_key.get()
-					dictionaries.append(dictionary.wordList)
 
-			if len(dictionaries) <1:
-				self.redirect('/subanagram')
-				return
+			if dictionary != None:
+				if len(dictionary.subanagramKeys) > 0:
+					keys = dictionary.subanagramKeys
+				else:
+					self.getAllSubKeys(text,keys)
+					beg = user.user_id()+":"
+					keys = [beg + key for key in keys]
+					dictionary.subanagramKeys = keys
+					dictionary.put()
+				
+				dictionaries = []
+				for key in keys:
+					if key in myuser.userDictionary:
+						dictionary_key = ndb.Key('Dictionary',key)
+						dictionary = dictionary_key.get()
+						dictionaries.append(dictionary.wordList)
+
+				if len(dictionaries) <1:
+					self.redirect('/subanagram')
+					return
 			
-			template_values = {'logout_url':users.create_logout_url(self.request.uri), 'dictionaries': dictionaries, 'text':text,'myuser': myuser,'myuserAnagrams':len(myuser.userDictionary)}
-			template = JINJA_ENVIRONMENT.get_template('subanagram.html')
-			self.response.write(template.render(template_values))
+				template_values = {'logout_url':users.create_logout_url(self.request.uri), 'dictionaries': dictionaries, 'text':text,'myuser': myuser,'myuserAnagrams':len(myuser.userDictionary)}
+				template = JINJA_ENVIRONMENT.get_template('subanagram.html')
+				self.response.write(template.render(template_values))
+				return
+
+			else:
+				self.redirect('/subanagram')
