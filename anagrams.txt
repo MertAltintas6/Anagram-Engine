@@ -1,0 +1,10 @@
+abcdef
+abcefd
+fedcba
+abcde
+abcfe
+bcdef
+abcd
+abce
+abc
+bac
