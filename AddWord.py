@@ -81,7 +81,7 @@ class AddWord(webapp2.RequestHandler):
 		
 
 		if button == "Add Word":
-			word = self.request.get("word").strip()
+			word = self.request.get("word").strip().lower()
 
 			key = user.user_id()+":"+self.orderLetters(word) 
 

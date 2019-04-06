@@ -60,7 +60,7 @@ class MainPage(webapp2.RequestHandler):
 			text = self.request.get("user_text")
 			words = text.split()
 			for word in words:
-				key = user.user_id()+":"+self.orderLetters(word)
+				key = user.user_id()+":"+self.orderLetters(word.lower())
 				if key not in keys:
 					keys.append(key)
 					if key in myuser.userDictionary:

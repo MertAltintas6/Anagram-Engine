@@ -73,7 +73,7 @@ class SubAnagram(webapp2.RequestHandler):
 		
 		if button == "Enter":
 			text = self.request.get('anagram_text').strip()
-			orderedKey = user.user_id() + ":" +self.orderLetters(text) 
+			orderedKey = user.user_id() + ":" +self.orderLetters(text.lower()) 
 			dictionary_key = ndb.Key('Dictionary',orderedKey)
 			dictionary = dictionary_key.get()
 			keys = []
@@ -87,13 +87,14 @@ class SubAnagram(webapp2.RequestHandler):
 					keys = [beg + key for key in keys]
 					dictionary.subanagramKeys = keys
 					dictionary.put()
-				
+				keys.append(orderedKey)
 				dictionaries = []
 				for key in keys:
 					if key in myuser.userDictionary:
 						dictionary_key = ndb.Key('Dictionary',key)
 						dictionary = dictionary_key.get()
 						dictionaries.append(dictionary.wordList)
+
 
 				if len(dictionaries) <1:
 					self.redirect('/subanagram')
